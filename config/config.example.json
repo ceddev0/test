@@ -1,0 +1,10 @@
+{
+  "watches": [
+    {
+      "name": "Example Page Title",
+      "url": "https://example.com",
+      "xpath": "//h1",
+      "cron": "*/15 * * * *"
+    }
+  ]
+}

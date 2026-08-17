@@ -1,0 +1,20 @@
+{
+  "name": "webpage-watcher",
+  "version": "1.0.0",
+  "description": "Scrapes configured webpages on a cron schedule, monitors XPath-selected content for changes, and sends email alerts when changes are detected.",
+  "main": "src/index.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node src/index.js",
+    "check": "node src/index.js --once"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.7.9",
+    "dotenv": "^16.4.7",
+    "jsdom": "^25.0.1",
+    "node-cron": "^3.0.3",
+    "nodemailer": "^6.9.16",
+    "xpath": "^0.0.34"
+  }
+}
