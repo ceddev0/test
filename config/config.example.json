@@ -1,7 +1,7 @@
 {
   "watches": [
     {
-      "name": "Example Page Title",
+      "name": "Example Watch",
       "url": "https://example.com",
       "xpath": "//h1",
       "cron": "*/15 * * * *"

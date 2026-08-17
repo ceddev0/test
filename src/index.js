@@ -2,7 +2,7 @@ require('dotenv').config();
 
 const cron = require('node-cron');
 const { loadConfig } = require('./config');
-const { fetchXPathContent } = require('./scraper');
+const { fetchXPathContent } = require('./fetcher');
 const { readState, writeState } = require('./storage');
 const { sendChangeAlert } = require('./mailer');
 
@@ -76,7 +76,7 @@ async function main() {
   }
 
   runScheduled();
-  console.log('webpage-watcher is running. Press Ctrl+C to stop.');
+  console.log('watcher is running. Press Ctrl+C to stop.');
 }
 
 main().catch((err) => {

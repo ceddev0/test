@@ -17,7 +17,7 @@ async function sendChangeAlert({ name, url, previousValue, newValue }) {
   await transport.sendMail({
     from: process.env.ALERT_EMAIL_FROM,
     to: process.env.ALERT_EMAIL_TO,
-    subject: `[webpage-watcher] Change detected: ${name}`,
+    subject: `[watcher] Change detected: ${name}`,
     text: [
       `A monitored section of "${name}" changed.`,
       `URL: ${url}`,
