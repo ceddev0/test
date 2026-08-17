@@ -4,10 +4,10 @@ Guidance for Claude and other contributors working in this repository.
 
 ## Project
 
-`webpage-watcher` — a small Node.js app that scrapes configured webpages on a
-cron schedule, monitors XPath-selected content for changes, and sends an
-email alert via SMTP when a change is detected. See `README.md` for setup
-and usage.
+`watcher` — a small Node.js app that scrapes configured URLs on a cron
+schedule, monitors XPath-selected content for changes, and sends an email
+alert via SMTP when a change is detected. See `README.md` for setup and
+usage.
 
 ## Commit conventions
 

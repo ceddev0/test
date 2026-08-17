@@ -4,7 +4,7 @@ const xpath = require('xpath');
 
 async function fetchXPathContent(url, xpathExpression) {
   const response = await axios.get(url, {
-    headers: { 'User-Agent': 'webpage-watcher/1.0' },
+    headers: { 'User-Agent': 'watcher/1.0' },
     timeout: 15000,
   });
 

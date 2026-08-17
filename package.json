@@ -1,7 +1,7 @@
 {
-  "name": "webpage-watcher",
+  "name": "watcher",
   "version": "1.0.0",
-  "description": "Scrapes configured webpages on a cron schedule, monitors XPath-selected content for changes, and sends email alerts when changes are detected.",
+  "description": "Scrapes configured URLs on a cron schedule, monitors XPath-selected content for changes, and sends email alerts when changes are detected.",
   "main": "src/index.js",
   "type": "commonjs",
   "scripts": {

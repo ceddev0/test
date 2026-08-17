@@ -76,7 +76,7 @@ async function main() {
   }
 
   runScheduled();
-  console.log('webpage-watcher is running. Press Ctrl+C to stop.');
+  console.log('watcher is running. Press Ctrl+C to stop.');
 }
 
 main().catch((err) => {

@@ -1,8 +1,8 @@
-# webpage-watcher
+# watcher
 
-A small Node.js app that scrapes configured webpages on a cron schedule,
-monitors specific parts of each page via XPath, and sends an email alert
-whenever the monitored content changes.
+A small Node.js app that scrapes configured URLs on a cron schedule,
+monitors specific content via XPath, and sends an email alert whenever the
+monitored content changes.
 
 ## Setup
 
@@ -12,7 +12,7 @@ cp config/config.example.json config/config.json
 cp .env.example .env
 ```
 
-Edit `config/config.json` to list the pages you want to watch, and edit
+Edit `config/config.json` to list the URLs you want to watch, and edit
 `.env` with your SMTP credentials and alert email addresses.
 
 ### Config format (`config/config.json`)
@@ -21,7 +21,7 @@ Edit `config/config.json` to list the pages you want to watch, and edit
 {
   "watches": [
     {
-      "name": "Example Page Title",
+      "name": "Example Watch",
       "url": "https://example.com",
       "xpath": "//h1",
       "cron": "*/15 * * * *"
@@ -31,9 +31,9 @@ Edit `config/config.json` to list the pages you want to watch, and edit
 ```
 
 - `name` — a label used in logs, state, and alert emails.
-- `url` — the page to fetch.
+- `url` — the URL to fetch.
 - `xpath` — the XPath expression selecting the content to monitor.
-- `cron` — a standard cron expression controlling how often this page is checked.
+- `cron` — a standard cron expression controlling how often this watch is checked.
 
 ### Environment variables (`.env`)
 
@@ -58,7 +58,7 @@ npm run check
 
 ## How it works
 
-On each check, the app fetches the page, extracts the text content matching
+On each check, the app fetches the URL, extracts the text content matching
 the configured XPath, and compares it against the last-seen value stored in
 `data/state.json`. If the value differs from the previous run, an email
 alert is sent via SMTP (using [nodemailer](https://nodemailer.com/)) and the
