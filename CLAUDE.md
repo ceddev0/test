@@ -4,7 +4,7 @@ Guidance for Claude and other contributors working in this repository.
 
 ## Project
 
-`watcher` — a small Node.js app that scrapes configured URLs on a cron
+`watcher` — a small Node.js app that fetches configured URLs on a cron
 schedule, monitors XPath-selected content for changes, and sends an email
 alert via SMTP when a change is detected. See `README.md` for setup and
 usage.

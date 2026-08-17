@@ -2,7 +2,7 @@ require('dotenv').config();
 
 const cron = require('node-cron');
 const { loadConfig } = require('./config');
-const { fetchXPathContent } = require('./scraper');
+const { fetchXPathContent } = require('./fetcher');
 const { readState, writeState } = require('./storage');
 const { sendChangeAlert } = require('./mailer');
 

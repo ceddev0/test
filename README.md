@@ -1,6 +1,6 @@
 # watcher
 
-A small Node.js app that scrapes configured URLs on a cron schedule,
+A small Node.js app that fetches configured URLs on a cron schedule,
 monitors specific content via XPath, and sends an email alert whenever the
 monitored content changes.
 
