@@ -39,13 +39,13 @@ Rules:
 ## Development
 
 ```bash
-npm install
+yarn install
 cp config/config.example.json config/config.json
 cp .env.example .env
 ```
 
-- `npm start` — run continuously on the configured cron schedules.
-- `npm run check` — run every configured watch once immediately (useful for
+- `yarn start` — run continuously on the configured cron schedules.
+- `yarn check` — run every configured watch once immediately (useful for
   testing config and XPath expressions).
 
 There is currently no lint or test suite configured in `package.json`; don't
