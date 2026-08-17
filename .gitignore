@@ -1,6 +1,5 @@
-# App config/state (copy config/config.example.json to config/config.json)
+# App config (copy config/config.example.json to config/config.json)
 config/config.json
-data/*.json
 
 # Logs
 logs

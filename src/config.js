@@ -18,7 +18,7 @@ function loadConfig(configPath) {
   }
 
   parsed.watches.forEach((watch, index) => {
-    for (const field of ['name', 'url', 'xpath', 'cron']) {
+    for (const field of ['url', 'xpath', 'cron']) {
       if (!watch[field]) {
         throw new Error(`Watch at index ${index} is missing required field "${field}".`);
       }

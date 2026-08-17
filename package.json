@@ -13,6 +13,10 @@
     "axios": "^1.7.9",
     "dotenv": "^16.4.7",
     "jsdom": "^25.0.1",
+    "koa": "^2.15.3",
+    "koa-bodyparser": "^4.4.1",
+    "koa-router": "^12.0.1",
+    "mongodb": "^6.11.0",
     "node-cron": "^3.0.3",
     "nodemailer": "^6.9.16",
     "xpath": "^0.0.34"
