@@ -44,14 +44,12 @@ async function fetchPage(url) {
   return response.text();
 }
 
-async function sendWebhook(webhookUrl, status) {
+async function sendWebhook(webhookUrl) {
   const response = await fetch(webhookUrl, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      title: 'Back in stock!',
-      text: `Climatiseur Portasplit Midea is ${status === 'in_stock' ? 'back in stock' : status}`,
-      input: PRODUCT_URL,
+      input: `Climatiseur Portasplit Midea is back in stock: ${PRODUCT_URL}`,
     }),
   });
 
@@ -94,7 +92,7 @@ async function main() {
 
   if (newStatus === 'in_stock' && previousStatus === 'out_of_stock') {
     console.log('Back in stock, sending webhook alert.');
-    await sendWebhook(webhookUrl, newStatus);
+    await sendWebhook(webhookUrl);
   }
 
   if (newStatus !== previousStatus && newStatus !== 'unknown') {
