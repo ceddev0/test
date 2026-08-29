@@ -10,13 +10,8 @@ const PRODUCTS = {
 const STATE_PATH = '.github/stock-watch/state.json';
 const CLAUDE_MODEL = process.env.CLAUDE_MODEL || 'claude-sonnet-5';
 
-function stripTags(html) {
-  return html
-    .replace(/<script[\s\S]*?<\/script>/gi, ' ')
-    .replace(/<style[\s\S]*?<\/style>/gi, ' ')
-    .replace(/<[^>]+>/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim();
+function removeStyles(html) {
+  return html.replace(/<style[\s\S]*?<\/style>/gi, ' ').trim();
 }
 
 async function fetchPageText(url) {
@@ -32,7 +27,7 @@ async function fetchPageText(url) {
     throw new Error(`Fetch failed with status ${response.status}`);
   }
 
-  return stripTags(await response.text()).slice(0, 12000);
+  return removeStyles(await response.text()).slice(0, 12000);
 }
 
 async function classifyStock(apiKey, pageText) {
