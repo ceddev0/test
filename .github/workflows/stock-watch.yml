@@ -1,0 +1,36 @@
+name: Stock Watch
+
+on:
+  schedule:
+    - cron: '*/10 * * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: stock-watch
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Check stock and alert
+        env:
+          STOCK_WEBHOOK_URL: ${{ secrets.STOCK_WEBHOOK_URL }}
+        run: node .github/scripts/stock-check.mjs
+
+      - name: Commit updated state
+        run: |
+          if [ -n "$(git status --porcelain .github/stock-watch/state.json)" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add .github/stock-watch/state.json
+            git commit -m "chore: update stock watch state"
+            git push
+          else
+            echo "No state change, skipping commit."
+          fi
