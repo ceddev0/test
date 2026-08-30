@@ -22,7 +22,7 @@ jobs:
         env:
           STOCK_WEBHOOK_URL: ${{ secrets.STOCK_WEBHOOK_URL }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-        run: node .github/old/stock.mjs
+        run: node .github/workflows_old/stock.mjs
 
       - name: Commit updated state
         run: |
