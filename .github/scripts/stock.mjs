@@ -7,7 +7,7 @@ const PRODUCTS = {
   },
 };
 
-const STATE_PATH = '.github/stock-watch/state.json';
+const STATE_PATH = '.github/states/stock.json';
 const CLAUDE_MODEL = process.env.CLAUDE_MODEL || 'claude-sonnet-5';
 
 function removeStyles(html) {
