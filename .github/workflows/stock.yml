@@ -41,7 +41,7 @@ jobs:
         env:
           STOCK_WEBHOOK_URL: ${{ secrets.STOCK_WEBHOOK_URL }}
           CLAUDE_RESULT: ${{ steps.check.outputs.structured_output }}
-        run: node .github/scripts/notify.mjs
+        run: node .github/scripts/stock.mjs
 
       - name: Commit updated state
         run: |
