@@ -24,10 +24,10 @@ jobs:
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           prompt: |
-            Products to check (key: url):
+            Products to check, as a JSON object mapping key to URL:
             ${{ vars.STOCK_PRODUCTS }}
 
-            For each product listed above, use WebFetch to load its URL and
+            For each product in that object, use WebFetch to load its URL and
             determine whether it is currently in stock and purchasable (look
             for an "add to cart" call to action versus out-of-stock /
             unavailable messaging). Return one entry per product key in the
