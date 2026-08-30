@@ -43,7 +43,7 @@ async function main() {
     }
 
     if (status !== previousStatus && status !== 'unknown') {
-      state[key] = { status, checkedAt: new Date().toISOString() };
+      state[key] = { status, updatedAt: new Date().toISOString() };
       stateChanged = true;
     }
   }
