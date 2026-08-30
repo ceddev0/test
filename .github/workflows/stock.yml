@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: stock-watch
+  group: stock
   cancel-in-progress: false
 
 jobs:
@@ -18,11 +18,30 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
 
-      - name: Check stock and alert
+      - name: Check stock with Claude
+        id: check
+        uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          prompt: |
+            Products to check (key: url):
+            - leroy-merlin: https://www.leroymerlin.fr/produits/climatiseur-split-mobile-reversible-portasplit-midea-par-optimea-93857579.html
+
+            For each product listed above, use WebFetch to load its URL and
+            determine whether it is currently in stock and purchasable (look
+            for an "add to cart" call to action versus out-of-stock /
+            unavailable messaging). Return one entry per product key in the
+            `results` array, with status one of "in_stock", "out_of_stock",
+            or "unknown" if you can't tell.
+          claude_args: |
+            --allowedTools "WebFetch"
+            --json-schema '{"type":"object","properties":{"results":{"type":"array","items":{"type":"object","properties":{"key":{"type":"string"},"status":{"type":"string","enum":["in_stock","out_of_stock","unknown"]}},"required":["key","status"]}}},"required":["results"]}'
+
+      - name: Notify on stock change
         env:
           STOCK_WEBHOOK_URL: ${{ secrets.STOCK_WEBHOOK_URL }}
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-        run: node .github/scripts/stock.mjs
+          CLAUDE_RESULT: ${{ steps.check.outputs.structured_output }}
+        run: node .github/scripts/notify.mjs
 
       - name: Commit updated state
         run: |
