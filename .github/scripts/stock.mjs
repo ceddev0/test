@@ -27,7 +27,7 @@ async function fetchPageText(url) {
     throw new Error(`Fetch failed with status ${response.status}`);
   }
 
-  return removeStyles(await response.text()).slice(0, 12000);
+  return removeStyles(await response.text());
 }
 
 async function classifyStock(apiKey, pageText) {
