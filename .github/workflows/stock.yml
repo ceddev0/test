@@ -1,4 +1,4 @@
-name: Stock Watch
+name: Stock
 
 on:
   schedule:
@@ -22,7 +22,7 @@ jobs:
         env:
           STOCK_WEBHOOK_URL: ${{ secrets.STOCK_WEBHOOK_URL }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-        run: node .github/scripts/stock-check.mjs
+        run: node .github/scripts/stock.mjs
 
       - name: Commit updated state
         run: |
