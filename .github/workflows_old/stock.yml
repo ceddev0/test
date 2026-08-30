@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: stock-watch
+  group: stock_old
   cancel-in-progress: false
 
 jobs:
