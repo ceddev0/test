@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: stock
+  group: ${{ github.workflow }}
   cancel-in-progress: false
 
 jobs:
