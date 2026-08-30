@@ -1,0 +1,56 @@
+name: Stock
+
+on:
+  schedule:
+    - cron: '*/10 * * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: stock
+  cancel-in-progress: false
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Check stock with Claude
+        id: check
+        uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          prompt: |
+            Products to check, as a JSON object mapping key to URL:
+            ${{ toJSON(fromJSON(vars.STOCK_PRODUCTS)) }}
+
+            For each product in that object, use WebFetch to load its URL and
+            determine whether it is currently in stock and purchasable (look
+            for an "add to cart" call to action versus out-of-stock /
+            unavailable messaging). Return one entry per product key in the
+            `results` array, with status one of "in_stock", "out_of_stock",
+            or "unknown" if you can't tell.
+          claude_args: |
+            --allowedTools "WebFetch"
+            --json-schema '{"type":"object","properties":{"results":{"type":"array","items":{"type":"object","properties":{"key":{"type":"string"},"status":{"type":"string","enum":["in_stock","out_of_stock","unknown"]}},"required":["key","status"]}}},"required":["results"]}'
+
+      - name: Notify on stock change
+        env:
+          STOCK_WEBHOOK_URL: ${{ secrets.STOCK_WEBHOOK_URL }}
+          CLAUDE_RESULT: ${{ steps.check.outputs.structured_output }}
+        run: node .github/scripts/stock.mjs
+
+      - name: Commit updated state
+        run: |
+          if [ -n "$(git status --porcelain .github/states/stock.json)" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add .github/states/stock.json
+            git commit -m "chore: update stock watch state"
+            git push
+          else
+            echo "No state change, skipping commit."
+          fi
