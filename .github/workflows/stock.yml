@@ -25,7 +25,7 @@ jobs:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           prompt: |
             Products to check, as a JSON object mapping key to URL:
-            ${{ vars.STOCK_PRODUCTS }}
+            ${{ toJSON(fromJSON(vars.STOCK_PRODUCTS)) }}
 
             For each product in that object, use WebFetch to load its URL and
             determine whether it is currently in stock and purchasable (look
