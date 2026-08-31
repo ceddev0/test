@@ -28,7 +28,15 @@ async function main() {
   const webhookUrl = process.env.STOCK_WEBHOOK_URL;
   if (!webhookUrl) throw new Error('STOCK_WEBHOOK_URL environment variable is not set.');
 
-  const { results } = JSON.parse(process.env.CLAUDE_RESULT);
+  const claudeResult = process.env.CLAUDE_RESULT;
+  if (!claudeResult) {
+    throw new Error(
+      'CLAUDE_RESULT is empty - the "Check stock with Claude" step produced no structured_output ' +
+        '(often because claude-code-action skipped the run, e.g. its workflow-file validation check).'
+    );
+  }
+
+  const { results } = JSON.parse(claudeResult);
   const state = await readState();
   let stateChanged = false;
 
