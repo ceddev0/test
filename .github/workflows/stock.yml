@@ -35,7 +35,7 @@ jobs:
         uses: anthropics/claude-code-action@v1
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-          show_full_output: true
+          # show_full_output: true  # uncomment to see the full transcript for debugging
           prompt: |
             Products to check, as a JSON object mapping key to URL:
             ${{ toJSON(fromJSON(vars.STOCK_PRODUCTS)) }}
@@ -46,9 +46,25 @@ jobs:
             unavailable messaging). Return one entry per product key in the
             `results` array, with status one of "in_stock", "out_of_stock",
             or "unknown" if you can't tell.
+
+            Also report a reliability number from 0 to 1 for each
+            determination: your confidence that the status you reported is
+            correct, not how much content you managed to fetch. 1 means
+            absolutely reliable - you found explicit, unambiguous stock
+            information. Lower values mean you only had indirect evidence,
+            such as an add-to-cart button with no explicit stock statement.
+            0 means you have no reliable basis at all for the status you're
+            reporting.
+
+            Note: if the fetch failed, was blocked, or the page had no real
+            product content (e.g. a js-rendered page / SPA whose product data
+            never appears in the fetched content), reporting "unknown" is
+            itself the correct and reliable conclusion - give that a high
+            reliability score, not a low one, since correctly recognizing you
+            can't tell is the reliable answer.
           claude_args: |
             --allowedTools "WebFetch"
-            --json-schema '{"type":"object","properties":{"results":{"type":"array","items":{"type":"object","properties":{"key":{"type":"string"},"status":{"type":"string","enum":["in_stock","out_of_stock","unknown"]}},"required":["key","status"]}}},"required":["results"]}'
+            --json-schema '{"type":"object","properties":{"results":{"type":"array","items":{"type":"object","properties":{"key":{"type":"string"},"status":{"type":"string","enum":["in_stock","out_of_stock","unknown"]},"reliability":{"type":"number","minimum":0,"maximum":1}},"required":["key","status","reliability"]}}},"required":["results"]}'
 
       - name: Notify on stock change
         env:

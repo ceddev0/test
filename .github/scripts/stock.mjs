@@ -40,10 +40,12 @@ async function main() {
   const state = await readState();
   let stateChanged = false;
 
-  for (const { key, status } of results) {
+  for (const { key, status, reliability } of results) {
     const previousStatus = state[key]?.status;
 
-    console.log(`[${key}] previous: ${previousStatus ?? '(never checked)'}, current: ${status}`);
+    console.log(
+      `[${key}] previous: ${previousStatus ?? '(never checked)'}, current: ${status}, reliability: ${reliability}`
+    );
 
     if (status === 'in_stock' && previousStatus === 'out_of_stock') {
       console.log(`[${key}] Back in stock, sending webhook alert.`);
@@ -51,7 +53,7 @@ async function main() {
     }
 
     if (status !== previousStatus) {
-      state[key] = { status, updatedAt: new Date().toISOString() };
+      state[key] = { status, reliability, updatedAt: new Date().toISOString() };
       stateChanged = true;
     }
   }
