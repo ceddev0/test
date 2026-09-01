@@ -57,10 +57,11 @@ jobs:
             reporting.
 
             Note: if the fetch failed, was blocked, or the page had no real
-            product content, reporting "unknown" is itself the correct and
-            reliable conclusion - give that a high reliability score, not a
-            low one, since correctly recognizing you can't tell is the
-            reliable answer.
+            product content (e.g. a js-rendered page / SPA whose product data
+            never appears in the fetched content), reporting "unknown" is
+            itself the correct and reliable conclusion - give that a high
+            reliability score, not a low one, since correctly recognizing you
+            can't tell is the reliable answer.
           claude_args: |
             --allowedTools "WebFetch"
             --json-schema '{"type":"object","properties":{"results":{"type":"array","items":{"type":"object","properties":{"key":{"type":"string"},"status":{"type":"string","enum":["in_stock","out_of_stock","unknown"]},"reliability":{"type":"number","minimum":0,"maximum":1}},"required":["key","status","reliability"]}}},"required":["results"]}'
