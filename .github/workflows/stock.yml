@@ -46,9 +46,20 @@ jobs:
             unavailable messaging). Return one entry per product key in the
             `results` array, with status one of "in_stock", "out_of_stock",
             or "unknown" if you can't tell.
+
+            Also report your own reliability for each determination:
+            - "high": WebFetch returned the real page and you saw an explicit,
+              unambiguous stock indicator (e.g. an actual add-to-cart button or
+              an explicit out-of-stock / indisponible message).
+            - "medium": WebFetch returned real content but you had to infer the
+              status indirectly (no explicit indicator, or you're relying on
+              partial/secondary evidence).
+            - "low": the fetch failed, was blocked (e.g. HTTP 403), or returned
+              content with no relevant product information at all (e.g. only a
+              header/promo banner from a JS-rendered page).
           claude_args: |
             --allowedTools "WebFetch"
-            --json-schema '{"type":"object","properties":{"results":{"type":"array","items":{"type":"object","properties":{"key":{"type":"string"},"status":{"type":"string","enum":["in_stock","out_of_stock","unknown"]}},"required":["key","status"]}}},"required":["results"]}'
+            --json-schema '{"type":"object","properties":{"results":{"type":"array","items":{"type":"object","properties":{"key":{"type":"string"},"status":{"type":"string","enum":["in_stock","out_of_stock","unknown"]},"reliability":{"type":"string","enum":["high","medium","low"]}},"required":["key","status","reliability"]}}},"required":["results"]}'
 
       - name: Notify on stock change
         env:
