@@ -42,7 +42,6 @@ async function main() {
 
   for (const { key, status, reliability } of results) {
     const previousStatus = state[key]?.status;
-    const previousReliability = state[key]?.reliability;
 
     console.log(
       `[${key}] previous: ${previousStatus ?? '(never checked)'}, current: ${status}, reliability: ${reliability}`
@@ -53,7 +52,7 @@ async function main() {
       await sendWebhook(webhookUrl, key);
     }
 
-    if (status !== previousStatus || reliability !== previousReliability) {
+    if (status !== previousStatus) {
       state[key] = { status, reliability, updatedAt: new Date().toISOString() };
       stateChanged = true;
     }
