@@ -19,6 +19,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
 
+      - name: Seed state from stock-state branch
+        run: |
+          git fetch origin stock-state 2>/dev/null || true
+          mkdir -p .github/states
+          git show origin/stock-state:.github/states/stock.json > .github/states/stock.json 2>/dev/null \
+            || echo '{}' > .github/states/stock.json
+
       - name: Check stock with Claude
         id: check
         uses: anthropics/claude-code-action@v1
@@ -45,14 +52,25 @@ jobs:
           CLAUDE_RESULT: ${{ steps.check.outputs.structured_output }}
         run: node .github/scripts/stock.mjs
 
-      - name: Commit updated state
+      - name: Push updated state to stock-state branch
         run: |
+          cp .github/states/stock.json /tmp/new-stock-state.json
+          rm -f .github/states/stock.json
+          git fetch origin stock-state 2>/dev/null || true
+          if git rev-parse --verify origin/stock-state >/dev/null 2>&1; then
+            git checkout -B stock-state origin/stock-state
+          else
+            git checkout --orphan stock-state
+            git rm -rf . -q >/dev/null 2>&1 || true
+          fi
+          mkdir -p .github/states
+          cp /tmp/new-stock-state.json .github/states/stock.json
           if [ -n "$(git status --porcelain .github/states/stock.json)" ]; then
             git config user.name "github-actions[bot]"
             git config user.email "github-actions[bot]@users.noreply.github.com"
             git add .github/states/stock.json
             git commit -m "chore: update stock watch state"
-            git push
+            git push origin HEAD:stock-state
           else
             echo "No state change, skipping commit."
           fi
