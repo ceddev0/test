@@ -21,6 +21,10 @@ jobs:
 
       - name: Seed state from stock-state branch
         run: |
+          # State lives on stock-state, not main (main is a protected branch and
+          # rejects direct pushes - see the push step below). Read the file
+          # straight out of that branch without checking it out; fall back to an
+          # empty object on the very first run, before stock-state exists.
           git fetch origin stock-state 2>/dev/null || true
           mkdir -p .github/states
           git show origin/stock-state:.github/states/stock.json > .github/states/stock.json 2>/dev/null \
@@ -54,22 +58,45 @@ jobs:
 
       - name: Push updated state to stock-state branch
         run: |
+          # 1. stock.mjs already wrote the new state into the working tree - save it
+          #    off before we switch branches out from under it.
           cp .github/states/stock.json /tmp/new-stock-state.json
+
+          # 2. Even though this path isn't tracked on the current branch, `git
+          #    checkout` still refuses to switch if an untracked file would be
+          #    overwritten by a tracked file of the same path on the target
+          #    branch. Delete it first to avoid that collision.
           rm -f .github/states/stock.json
+
           git fetch origin stock-state 2>/dev/null || true
+
+          # 3. Does stock-state exist yet? git rev-parse resolves a ref to a SHA
+          #    and fails if the ref doesn't exist.
           if git rev-parse --verify origin/stock-state >/dev/null 2>&1; then
+            # 5. Subsequent runs: reset a local stock-state branch to match the
+            #    latest fetched remote copy.
             git checkout -B stock-state origin/stock-state
           else
+            # 4. First run ever: create a branch with no parent commit at all,
+            #    fully disconnected from main. Its working tree still has all of
+            #    main's files though, so wipe them for a clean slate.
             git checkout --orphan stock-state
             git rm -rf . -q >/dev/null 2>&1 || true
           fi
+
           mkdir -p .github/states
           cp /tmp/new-stock-state.json .github/states/stock.json
+
+          # 7. Skip committing when nothing actually changed, so we don't spam
+          #    the branch with empty/no-op commits.
           if [ -n "$(git status --porcelain .github/states/stock.json)" ]; then
             git config user.name "github-actions[bot]"
             git config user.email "github-actions[bot]@users.noreply.github.com"
             git add .github/states/stock.json
             git commit -m "chore: update stock watch state"
+            # 6. Push to stock-state specifically, regardless of the local
+            #    branch's name - main is protected and rejects direct pushes,
+            #    stock-state is not.
             git push origin HEAD:stock-state
           else
             echo "No state change, skipping commit."
