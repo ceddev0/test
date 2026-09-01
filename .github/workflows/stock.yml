@@ -47,18 +47,20 @@ jobs:
             `results` array, with status one of "in_stock", "out_of_stock",
             or "unknown" if you can't tell.
 
-            Also report your own reliability for each determination, as a
-            number from 0 to 1:
-            - close to 1.0: WebFetch returned the real page and you saw an
-              explicit, unambiguous stock indicator (e.g. an actual
-              add-to-cart button or an explicit out-of-stock / indisponible
-              message).
-            - around 0.5: WebFetch returned real content but you had to infer
-              the status indirectly (no explicit indicator, or you're relying
-              on partial/secondary evidence).
-            - close to 0.0: the fetch failed, was blocked (e.g. HTTP 403), or
-              returned content with no relevant product information at all
-              (e.g. only a header/promo banner from a JS-rendered page).
+            Also report a reliability number from 0 to 1 for each
+            determination: your confidence that the status you reported is
+            correct, not how much content you managed to fetch. 1 means
+            absolutely reliable - you found explicit, unambiguous stock
+            information. Lower values mean you only had indirect evidence,
+            such as an add-to-cart button with no explicit stock statement.
+            0 means you have no reliable basis at all for the status you're
+            reporting.
+
+            Note: if the fetch failed, was blocked, or the page had no real
+            product content, reporting "unknown" is itself the correct and
+            reliable conclusion - give that a high reliability score, not a
+            low one, since correctly recognizing you can't tell is the
+            reliable answer.
           claude_args: |
             --allowedTools "WebFetch"
             --json-schema '{"type":"object","properties":{"results":{"type":"array","items":{"type":"object","properties":{"key":{"type":"string"},"status":{"type":"string","enum":["in_stock","out_of_stock","unknown"]},"reliability":{"type":"number","minimum":0,"maximum":1}},"required":["key","status","reliability"]}}},"required":["results"]}'
